@@ -1,0 +1,83 @@
+---
+import { process, processTitle } from './process.data';
+---
+
+<div class="process">
+  <div class="wrap">
+    <header class="block-head reveal">
+      <p class="eyebrow">{processTitle.label}</p>
+      <h2 class="sec-title">{processTitle.title}</h2>
+    </header>
+
+    <ol class="process-list">
+      {
+        process.map((p, i) => (
+          <li class="process-step reveal" style={`--reveal-delay:${(i % 3) * 90}ms`}>
+            <span class="process-n" aria-hidden="true">{p.n}</span>
+            <div class="process-body">
+              <h3>{p.title}</h3>
+              <p>{p.desc}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</div>
+
+<style>
+  .process {
+    margin-top: 96px;
+  }
+  .block-head {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 720px;
+    margin-bottom: 24px;
+  }
+  .process-list {
+    list-style: none;
+    padding: 0;
+  }
+  .process-step {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 32px;
+    align-items: baseline;
+    padding: 30px 0;
+    border-top: 1px solid var(--color-line);
+  }
+  .process-step:last-child {
+    border-bottom: 1px solid var(--color-line);
+  }
+  .process-n {
+    font-family: var(--font-display);
+    font-size: 64px;
+    line-height: 1;
+    color: var(--color-accent);
+  }
+  .process-body h3 {
+    font-family: var(--font-display);
+    font-size: 24px;
+    color: var(--color-ink);
+    margin-bottom: 8px;
+  }
+  .process-body p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+    max-width: 560px;
+  }
+
+  @media (max-width: 880px) {
+    .process-step {
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 26px 0;
+    }
+    .process-n {
+      font-size: 48px;
+    }
+  }
+</style>

@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../modules/nav/Nav.astro';
+import Hero from '../modules/hero/Hero.astro';
+import Cases from '../modules/cases/Cases.astro';
+import Services from '../modules/services/Services.astro';
+import Process from '../modules/process/Process.astro';
+import About from '../modules/about/About.astro';
+import Logos from '../modules/logos/Logos.astro';
+import Faq from '../modules/faq/Faq.astro';
+import Contact from '../modules/contact/Contact.astro';
+import Footer from '../modules/footer/Footer.astro';
+---
+
+<Base>
+  <Nav />
+  <main>
+    <Hero />
+    <Cases />
+
+    <section id="servicos" class="section divider-top">
+      <Services />
+      <Process />
+    </section>
+
+    <About />
+    <Logos />
+    <Faq />
+    <Contact />
+  </main>
+  <Footer />
+</Base>

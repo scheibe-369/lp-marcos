@@ -1,0 +1,166 @@
+---
+import { navItems } from './nav.data';
+---
+
+<nav class="nav" data-nav aria-label="Navegação principal">
+  <div class="wrap nav-inner">
+    <a href="#inicio" class="brand">
+      Damascena<span class="brand-dot">.</span>Films
+    </a>
+
+    <ul class="menu">
+      {navItems.map((item) => (
+        <li><a href={item.href}>{item.label}</a></li>
+      ))}
+    </ul>
+
+    <button
+      class="nav-toggle"
+      data-nav-toggle
+      aria-expanded="false"
+      aria-controls="nav-drawer"
+    >
+      Menu
+    </button>
+  </div>
+</nav>
+
+<div class="drawer" id="nav-drawer" data-nav-drawer aria-hidden="true">
+  <button class="drawer-close" data-nav-close aria-label="Fechar menu">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+      <path d="M3 3l16 16M19 3L3 19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+    </svg>
+  </button>
+  <nav class="drawer-menu" aria-label="Navegação mobile">
+    <ul>
+      {navItems.map((item) => (
+        <li><a href={item.href}>{item.label}</a></li>
+      ))}
+    </ul>
+  </nav>
+</div>
+
+<script>
+  import { initNav } from './nav.client';
+  initNav();
+</script>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    height: 74px;
+    display: flex;
+    align-items: center;
+    background: rgba(10, 19, 38, 0.55);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid transparent;
+    transition: background-color 0.4s ease, border-color 0.4s ease;
+  }
+  .nav.scrolled {
+    background: rgba(10, 19, 38, 0.88);
+    border-bottom-color: var(--color-line);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand {
+    font-family: var(--font-display);
+    font-size: 21px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+  }
+  .brand-dot { color: var(--color-accent); }
+
+  .menu {
+    display: flex;
+    gap: 34px;
+    list-style: none;
+    padding: 0;
+  }
+  .menu a {
+    position: relative;
+    display: inline-block;
+    font-size: 14px;
+    letter-spacing: 0.03em;
+    color: var(--color-ink-soft);
+    padding: 4px 0;
+    transition: color 0.3s ease;
+  }
+  .menu a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1px;
+    width: 0;
+    background: var(--color-accent);
+    transition: width 0.3s ease;
+  }
+  .menu a:hover { color: var(--color-ink); }
+  .menu a:hover::after { width: 100%; }
+
+  .nav-toggle {
+    display: none;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--color-ink);
+    padding: 8px 2px;
+  }
+
+  /* Drawer mobile */
+  .drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background: rgba(10, 19, 38, 0.94);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+  }
+  .drawer.open { opacity: 1; visibility: visible; }
+  .drawer-close {
+    position: absolute;
+    top: 24px;
+    right: 26px;
+    color: var(--color-ink-soft);
+    padding: 8px;
+    transition: color 0.3s ease;
+  }
+  .drawer-close:hover { color: var(--color-accent); }
+  .drawer-menu {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+  }
+  .drawer-menu ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0;
+  }
+  .drawer-menu a {
+    font-family: var(--font-display);
+    font-size: clamp(34px, 9vw, 50px);
+    line-height: 1.2;
+    color: var(--color-ink);
+    transition: color 0.3s ease;
+  }
+  .drawer-menu a:hover { color: var(--color-accent-soft); }
+
+  @media (max-width: 880px) {
+    .menu { display: none; }
+    .nav-toggle { display: block; }
+  }
+</style>

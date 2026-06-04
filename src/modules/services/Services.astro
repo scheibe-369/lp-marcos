@@ -1,0 +1,66 @@
+---
+import { services, servicesTitle } from './services.data';
+---
+
+<div class="services">
+  <div class="wrap">
+    <header class="block-head reveal">
+      <p class="eyebrow">{servicesTitle.label}</p>
+      <h2 class="sec-title">{servicesTitle.title}</h2>
+    </header>
+
+    <div class="services-grid">
+      {
+        services.map((s, i) => (
+          <article class="service-card reveal" style={`--reveal-delay:${(i % 2) * 90}ms`}>
+            <h3>{s.title}</h3>
+            <p>{s.desc}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<style>
+  .block-head {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 720px;
+    margin-bottom: 44px;
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+  }
+  .service-card {
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
+    padding: 34px 32px;
+    transition: transform 0.4s ease, border-color 0.4s ease;
+  }
+  .service-card:hover {
+    transform: translateY(-4px);
+    border-color: #33486e;
+  }
+  .service-card h3 {
+    font-family: var(--font-display);
+    font-size: 24px;
+    color: var(--color-ink);
+    margin-bottom: 12px;
+  }
+  .service-card p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+
+  @media (max-width: 880px) {
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,141 @@
+---
+import { hero } from './hero.data';
+import { buildWaLink } from '../../shared/config/site';
+import RichText from '../../shared/ui/RichText.astro';
+import CtaButton from '../../shared/ui/CtaButton.astro';
+
+const waLink = buildWaLink();
+---
+
+<section id="inicio" class="hero">
+  <div class="hero-halo" aria-hidden="true"></div>
+
+  <div class="wrap hero-grid">
+    <div class="hero-content">
+      <p class="eyebrow reveal">{hero.eyebrow}</p>
+
+      <h1 class="hero-title reveal" style="--reveal-delay:90ms">
+        {hero.brand}<span class="hero-dot">.</span><em class="hero-films">Films</em>
+      </h1>
+
+      <p class="hero-role reveal" style="--reveal-delay:160ms">{hero.role}</p>
+
+      <p class="hero-lede reveal" style="--reveal-delay:230ms">
+        <RichText text={hero.lede} strongWeight={600} />
+      </p>
+
+      <div class="hero-cta reveal" style="--reveal-delay:300ms">
+        <CtaButton href={waLink} label={hero.cta} event="whatsapp_click" />
+      </div>
+    </div>
+
+    <div class="hero-frame reveal" style="--reveal-delay:200ms" aria-hidden="true">
+      <!-- Placeholder em gradiente. Trocar por <Image> de marcos.jpg quando houver foto real. -->
+      <div class="hero-media">
+        <span class="hero-media-label">Sua imagem</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding-top: 74px;
+    overflow: clip;
+  }
+
+  .hero-halo {
+    position: absolute;
+    top: -10%;
+    right: -5%;
+    width: 70vw;
+    max-width: 900px;
+    aspect-ratio: 1;
+    background: radial-gradient(circle, rgba(201, 169, 106, 0.12), transparent 62%);
+    pointer-events: none;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.85fr;
+    align-items: center;
+    gap: 64px;
+    padding-block: 60px;
+  }
+
+  .hero-content { max-width: 620px; }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 8vw, 104px);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-top: 22px;
+    color: var(--color-ink);
+  }
+  .hero-dot { color: var(--color-accent); }
+  .hero-films {
+    font-style: italic;
+    color: var(--color-accent-soft);
+  }
+
+  .hero-role {
+    margin-top: 22px;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--color-ink-soft);
+  }
+
+  .hero-lede {
+    margin-top: 28px;
+    max-width: 540px;
+    font-size: clamp(17px, 2.2vw, 21px);
+    font-weight: 300;
+    line-height: 1.6;
+    color: var(--color-ink);
+  }
+
+  .hero-cta { margin-top: 38px; }
+
+  /* Moldura em retrato */
+  .hero-frame {
+    justify-self: end;
+    width: 100%;
+    max-width: 420px;
+    padding: 14px;
+    border: 1px solid var(--color-line);
+    border-radius: 40px;
+    background: linear-gradient(145deg, #16294a, #0b1730);
+  }
+  .hero-media {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    border-radius: 28px;
+    background: linear-gradient(145deg, #16294a, #0b1730);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+  }
+  .hero-media-label {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #3a4d72;
+  }
+
+  @media (max-width: 880px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    /* No mobile a moldura some e o conteúdo respira (PRD §8 passo 4) */
+    .hero-frame { display: none; }
+    .hero { min-height: 92svh; }
+  }
+</style>

@@ -1,0 +1,29 @@
+---
+/**
+ * Renderiza copy com marcações **negrito** → <b class="accent-soft"> no build
+ * (SSR, zero JS). Não imprime markdown literal. Usado pelo hero (lede) e about.
+ * `strongWeight` ajusta o peso do destaque (hero=600 Hanken, about=500 Fraunces).
+ */
+import { parseRichText } from '../lib/richtext';
+
+interface Props {
+  text: string;
+  strongWeight?: number;
+  class?: string;
+}
+
+const { text, strongWeight = 600, class: className } = Astro.props;
+const segments = parseRichText(text);
+---
+
+<span class={className}>
+  {
+    segments.map((seg) =>
+      seg.strong ? (
+        <b class="accent-soft" style={`font-weight:${strongWeight}`}>{seg.text}</b>
+      ) : (
+        seg.text
+      ),
+    )
+  }
+</span>

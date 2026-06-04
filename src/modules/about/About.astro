@@ -1,0 +1,81 @@
+---
+import { about, aboutStats, aboutTitle } from './about.data';
+import RichText from '../../shared/ui/RichText.astro';
+---
+
+<section id="sobre" class="section divider-top">
+  <div class="wrap">
+    <h2 class="eyebrow reveal about-eyebrow">{aboutTitle.label}</h2>
+
+    <div class="about-grid">
+      <div class="about-stats reveal">
+        {
+          aboutStats.map((s) => (
+            <div class="stat">
+              <span class="stat-big">{s.big}</span>
+              <span class="stat-label">{s.label}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="about-text">
+        {
+          about.map((p, i) => (
+            <p class="reveal" style={`--reveal-delay:${(i % 3) * 90}ms`}>
+              <RichText text={p} strongWeight={500} />
+            </p>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-eyebrow {
+    margin-bottom: 44px;
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 70px;
+    align-items: start;
+  }
+  .about-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+  }
+  .stat-big {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 64px;
+    line-height: 1;
+    color: var(--color-accent);
+  }
+  .stat-label {
+    display: block;
+    margin-top: 8px;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    color: var(--color-ink-soft);
+  }
+  .about-text p {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(18px, 2.4vw, 24px);
+    line-height: 1.5;
+    color: var(--color-ink);
+  }
+  .about-text p + p {
+    margin-top: 26px;
+  }
+
+  @media (max-width: 880px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+</style>

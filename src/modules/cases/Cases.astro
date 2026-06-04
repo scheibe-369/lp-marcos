@@ -1,0 +1,296 @@
+---
+import { cases, casesTitle } from './cases.data';
+---
+
+<section id="cases" class="cases">
+  <div class="wrap cases-head">
+    <p class="eyebrow reveal">{casesTitle.label}</p>
+    <h2 class="sec-title reveal" style="--reveal-delay:80ms">{casesTitle.title}</h2>
+  </div>
+
+  <div class="cases-stage" data-cases>
+    <div class="cases-track" data-cases-track>
+      {
+        cases.map((c, i) => (
+          <button
+            type="button"
+            class="case-card"
+            data-case-card
+            data-video-type={c.videoType}
+            data-video-id={c.videoId}
+            data-event="case_open"
+            style={`--i:${i}`}
+          >
+            <span class="sr-only">Abrir vídeo: </span>
+            {/* Placeholder em gradiente. Trocar por <Image src={c.thumb}/> quando houver still real. */}
+            <span class="case-ph" aria-hidden="true">Sua imagem</span>
+
+            <span class="case-tag">{c.tag}</span>
+
+            <span class="case-overlay">
+              <span class="case-meta">
+                <span class="case-client">{c.client}</span>
+                <span class="case-project">{c.project}</span>
+              </span>
+              <span class="case-play" aria-hidden="true">
+                <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
+                  <circle cx="23" cy="23" r="22" stroke="currentColor" stroke-width="1.2" />
+                  <path d="M19 16l11 7-11 7V16z" fill="currentColor" />
+                </svg>
+              </span>
+            </span>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="cases-cursor" data-cases-cursor aria-hidden="true">
+    <span class="cases-cursor-inner">Ver</span>
+  </div>
+
+  <div
+    class="lightbox"
+    data-lightbox
+    role="dialog"
+    aria-modal="true"
+    aria-label="Player de vídeo"
+    aria-hidden="true"
+  >
+    <button class="lightbox-close" data-lightbox-close type="button" aria-label="Fechar vídeo">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <path d="M3 3l16 16M19 3L3 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+    </button>
+    <div class="lightbox-frame" data-lightbox-frame></div>
+  </div>
+</section>
+
+<script>
+  import { initCarousel } from './carousel.client';
+  import { initCursor } from './cursor.client';
+  import { initLightbox } from './lightbox.client';
+  initCarousel();
+  initCursor();
+  initLightbox();
+</script>
+
+<style>
+  .cases {
+    padding-block: 96px;
+    overflow: clip;
+  }
+  .cases-head {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+
+  /* Palco: clipa horizontal, deixa a inclinação vazar na vertical */
+  .cases-stage {
+    position: relative;
+    overflow-x: clip;
+    overflow-y: visible;
+    padding-block: 74px;
+    touch-action: pan-y;
+  }
+  .cases-stage.dragging {
+    cursor: grabbing;
+  }
+
+  .cases-track {
+    display: flex;
+    gap: 26px;
+    padding-inline: max(28px, calc((100vw - 1180px) / 2 + 28px));
+    width: max-content;
+    transform-origin: center center;
+    will-change: transform;
+  }
+
+  /* Card em retrato ~3:4 */
+  .case-card {
+    position: relative;
+    flex: 0 0 auto;
+    width: 304px;
+    aspect-ratio: 3 / 4;
+    border: 1px solid var(--color-line);
+    border-radius: 4px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #14274a, #0a1426);
+    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+  }
+  .case-card:hover {
+    transform: translateY(-4px);
+    border-color: #33486e;
+    box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.7);
+  }
+
+  .case-ph {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #3a4d72;
+  }
+
+  .case-tag {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 2;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-ink-soft);
+  }
+
+  .case-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 14px;
+    padding: 22px;
+    background: linear-gradient(to top, rgba(7, 14, 30, 0.92) 8%, rgba(7, 14, 30, 0.1) 60%, transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .case-card:hover .case-overlay,
+  .case-card:focus-visible .case-overlay {
+    opacity: 1;
+  }
+
+  .case-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .case-client {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-accent);
+  }
+  .case-project {
+    font-family: var(--font-display);
+    font-size: 26px;
+    line-height: 1.1;
+    color: var(--color-ink);
+  }
+  .case-play {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    color: var(--color-accent);
+    opacity: 0.85;
+  }
+
+  /* Cursor customizado "VER" */
+  .cases-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 70;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .cases-cursor-inner {
+    position: absolute;
+    left: -36px;
+    top: -36px;
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: var(--color-bg);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .cases-cursor.on .cases-cursor-inner {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .cases-stage.cursor-on,
+  .cases-stage.cursor-on .case-card {
+    cursor: none;
+  }
+
+  /* Lightbox */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(10, 19, 38, 0.92);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  .lightbox.open {
+    opacity: 1;
+    visibility: visible;
+  }
+  .lightbox-frame {
+    width: 100%;
+    max-width: 1000px;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .lightbox-frame :global(iframe),
+  .lightbox-frame :global(video) {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 22px;
+    right: 24px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--color-accent);
+    border-radius: 50%;
+    color: var(--color-ink);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .lightbox-close:hover {
+    background: var(--color-accent);
+    color: var(--color-bg);
+  }
+
+  @media (max-width: 880px) {
+    .case-card {
+      width: 70vw;
+      max-width: 300px;
+    }
+    /* Mobile: sem hover/cursor — nome + tag sempre visíveis */
+    .case-overlay {
+      opacity: 1;
+      background: linear-gradient(to top, rgba(7, 14, 30, 0.92) 14%, transparent 70%);
+    }
+    .cases-cursor {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,170 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN TOKENS — fonte da verdade visual (PRD §10.1)
+   ============================================================ */
+@theme {
+  --color-bg:          #0a1326; /* azul marinho profundo — fundo de tudo */
+  --color-bg-soft:     #0f1c38; /* navy um tom acima — cards, hover de logo */
+  --color-ink:         #eef2f8; /* branco frio — texto e títulos */
+  --color-ink-soft:    #8a98b3; /* azul-cinza suave — texto secundário */
+  --color-line:        #1c2c4d; /* navy de borda — linhas e divisórias */
+  --color-accent:      #c9a96a; /* dourado champanhe — detalhe premium */
+  --color-accent-soft: #e2c896; /* dourado claro — destaques no texto */
+
+  --font-display: "Fraunces Variable", "Fraunces", serif;
+  --font-body:    "Hanken Grotesk Variable", "Hanken Grotesk", sans-serif;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-weight: 300;
+  line-height: 1.6;
+  font-size: 15px;
+  overflow-x: clip;                 /* a diagonal dos cases não cria scroll horizontal */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+a { color: inherit; text-decoration: none; }
+img, svg, video { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+::selection { background: var(--color-accent); color: var(--color-bg); }
+
+/* Grão global — overlay fixo estático (PRD §10.1) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: .035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* O conteúdo real fica acima do grão */
+#app, main, footer, nav { position: relative; z-index: 2; }
+
+/* Acessibilidade — anel de foco dourado fino e visível em tudo interativo */
+:where(a, button, summary, [tabindex], input, select, textarea):focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* ============================================================
+   PRIMITIVOS DO DESIGN SYSTEM (agnósticos, reusados por ~todas as seções)
+   ============================================================ */
+
+/* Container central */
+.wrap {
+  width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: 28px;
+}
+
+/* Ritmo vertical de seção */
+.section { padding-block: 110px; }
+
+/* Offset de âncora — a nav fixa (74px) não cobre o topo da seção alvo */
+:where(section[id]) { scroll-margin-top: 90px; }
+
+/* Eyebrow / rótulo de seção — uppercase dourado, raro e fino */
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: .22em;
+  color: var(--color-accent);
+}
+
+/* Título de seção — Fraunces grande */
+.sec-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5vw, 54px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -.02em;
+  color: var(--color-ink);
+}
+
+/* Destaque em copy (**bold** → dourado claro). Peso vem inline do RichText. */
+.accent-soft { color: var(--color-accent-soft); }
+
+/* Texto só pra leitor de tela (acessível, invisível visualmente) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Divisória superior entre seções (PRD §10.3) */
+.divider-top { border-top: 1px solid var(--color-line); }
+
+/* ============================================================
+   REVEAL no scroll (PRD §10.5) — estado inicial; .in aplicado via JS
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity .9s ease, transform .9s ease;
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ============================================================
+   prefers-reduced-motion — funcionalidade intacta, só o movimento some
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+
+/* ============================================================
+   RESPONSIVO — breakpoint principal 880px (PRD §6.7 / §10.3)
+   ============================================================ */
+@media (max-width: 880px) {
+  .section { padding-block: 78px; }
+}

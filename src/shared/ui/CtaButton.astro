@@ -1,0 +1,71 @@
+---
+/**
+ * Botão pill primário (PRD §10.4). Único elemento que preenche de dourado —
+ * disciplina 90/5. Reusado por hero e contact. Externo por padrão (WhatsApp),
+ * com rel de segurança. Emite [data-event] pro tracking delegado.
+ */
+interface Props {
+  href: string;
+  label: string;
+  event?: string;
+  external?: boolean;
+  class?: string;
+}
+
+const { href, label, event, external = true, class: className } = Astro.props;
+const rel = external ? 'noopener noreferrer' : undefined;
+const target = external ? '_blank' : undefined;
+---
+
+<a
+  href={href}
+  class:list={['cta', className]}
+  target={target}
+  rel={rel}
+  data-event={event}
+>
+  <span>{label}</span>
+  <svg class="cta-arrow" width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">
+    <path
+      d="M1 7h15M11 2l5 5-5 5"
+      stroke="currentColor"
+      stroke-width="1.6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    ></path>
+  </svg>
+</a>
+
+<style>
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 30px;
+    border: 1px solid var(--color-accent);
+    border-radius: 40px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--color-ink);
+    background: transparent;
+    white-space: nowrap;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+  .cta-arrow {
+    color: var(--color-accent);
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  .cta:hover {
+    background: var(--color-accent);
+    color: var(--color-bg);
+  }
+  .cta:hover .cta-arrow,
+  .cta:focus-visible .cta-arrow {
+    transform: translateX(4px);
+  }
+  .cta:hover .cta-arrow {
+    color: var(--color-bg);
+  }
+</style>
