@@ -23,6 +23,10 @@ Thumbs.db
 # artefatos de QA local (screenshots + tooling)
 .shots/
 
+# referências de layout que o usuário dropa (não são assets do site)
+public/marcos.png
+/ref*.png
+
 # editores
 .vscode/
 .idea/

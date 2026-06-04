@@ -29,8 +29,8 @@ import { cases, casesTitle } from './cases.data';
 
             <span class="case-overlay">
               <span class="case-meta">
-                <span class="case-client">{c.client}</span>
-                <span class="case-project">{c.project}</span>
+                <span class="case-client metallic-shine shine-accent">{c.client}</span>
+                <span class="case-project metallic-shine shine-ink">{c.project}</span>
               </span>
               <span class="case-play" aria-hidden="true">
                 <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
@@ -175,13 +175,11 @@ import { cases, casesTitle } from './cases.data';
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.18em;
-    color: var(--color-accent);
   }
   .case-project {
     font-family: var(--font-display);
     font-size: 26px;
     line-height: 1.1;
-    color: var(--color-ink);
   }
   .case-play {
     position: absolute;

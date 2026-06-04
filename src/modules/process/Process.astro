@@ -13,9 +13,9 @@ import { process, processTitle } from './process.data';
       {
         process.map((p, i) => (
           <li class="process-step reveal" style={`--reveal-delay:${(i % 3) * 90}ms`}>
-            <span class="process-n" aria-hidden="true">{p.n}</span>
+            <span class="process-n metallic-shine shine-accent" aria-hidden="true">{p.n}</span>
             <div class="process-body">
-              <h3>{p.title}</h3>
+              <h3 class="metallic-shine shine-ink">{p.title}</h3>
               <p>{p.desc}</p>
             </div>
           </li>
@@ -55,12 +55,10 @@ import { process, processTitle } from './process.data';
     font-family: var(--font-display);
     font-size: 64px;
     line-height: 1;
-    color: var(--color-accent);
   }
   .process-body h3 {
     font-family: var(--font-display);
     font-size: 24px;
-    color: var(--color-ink);
     margin-bottom: 8px;
   }
   .process-body p {

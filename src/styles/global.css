@@ -94,28 +94,71 @@ body::before {
 /* Offset de âncora — a nav fixa (74px) não cobre o topo da seção alvo */
 :where(section[id]) { scroll-margin-top: 90px; }
 
-/* Eyebrow / rótulo de seção — uppercase dourado, raro e fino */
+/* Eyebrow / rótulo de seção — uppercase dourado, raro e fino (com shine) */
 .eyebrow {
   font-family: var(--font-body);
   font-size: 13px;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: .22em;
-  color: var(--color-accent);
+  --metal-color: var(--color-accent);
+  --metal-shine: color-mix(in srgb, var(--color-accent) 35%, white);
 }
 
-/* Título de seção — Fraunces grande */
+/* Título de seção — Fraunces grande (branco com sweep champanhe) */
 .sec-title {
   font-family: var(--font-display);
   font-size: clamp(32px, 5vw, 54px);
   font-weight: 400;
   line-height: 1.05;
   letter-spacing: -.02em;
-  color: var(--color-ink);
+  --metal-color: var(--color-ink);
+  --metal-shine: color-mix(in srgb, var(--color-accent) 55%, white);
 }
 
-/* Destaque em copy (**bold** → dourado claro). Peso vem inline do RichText. */
-.accent-soft { color: var(--color-accent-soft); }
+/* ===== Metallic Shine — faixa de luz varrendo o texto (recolorível) =====
+   Aplicado em toda a copy/números da página. Cada elemento informa sua cor-base
+   (--metal-color) e o brilho (--metal-shine); a regra estrutural só consome.
+   Mantém a fonte; desliga em prefers-reduced-motion. */
+.metallic-shine,
+.eyebrow,
+.sec-title,
+.accent-soft {
+  background-image: linear-gradient(
+    120deg,
+    var(--metal-color) 38%,
+    var(--metal-shine) 50%,
+    var(--metal-color) 62%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: metallic-shine-sweep var(--metal-duration, 6.5s) linear infinite;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Cor-base + brilho por elemento. O brilho leva um tom champanhe pra o sweep
+   ficar visível mesmo em texto branco/cinza. */
+.accent-soft  { --metal-color: var(--color-accent-soft); --metal-shine: color-mix(in srgb, var(--color-accent-soft) 35%, white); }
+.metallic-shine { --metal-color: var(--color-accent-soft); --metal-shine: color-mix(in srgb, var(--color-accent-soft) 35%, white); }
+.shine-accent { --metal-color: var(--color-accent);      --metal-shine: color-mix(in srgb, var(--color-accent) 35%, white); }
+.shine-ink    { --metal-color: var(--color-ink);         --metal-shine: color-mix(in srgb, var(--color-accent) 55%, white); }
+.shine-soft   { --metal-color: var(--color-ink-soft);    --metal-shine: color-mix(in srgb, var(--color-ink) 55%, white); }
+
+@keyframes metallic-shine-sweep {
+  0%   { background-position: 100% 0%; }
+  100% { background-position: -100% 0%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metallic-shine,
+  .eyebrow,
+  .sec-title,
+  .accent-soft { animation: none; }
+}
 
 /* Texto só pra leitor de tela (acessível, invisível visualmente) */
 .sr-only {

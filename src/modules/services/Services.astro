@@ -13,7 +13,7 @@ import { services, servicesTitle } from './services.data';
       {
         services.map((s, i) => (
           <article class="service-card reveal" style={`--reveal-delay:${(i % 2) * 90}ms`}>
-            <h3>{s.title}</h3>
+            <h3 class="metallic-shine shine-ink">{s.title}</h3>
             <p>{s.desc}</p>
           </article>
         ))
@@ -49,7 +49,6 @@ import { services, servicesTitle } from './services.data';
   .service-card h3 {
     font-family: var(--font-display);
     font-size: 24px;
-    color: var(--color-ink);
     margin-bottom: 12px;
   }
   .service-card p {

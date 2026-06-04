@@ -11,3 +11,12 @@
 - Isolar cada elemento em seu próprio módulo/feature folder. NUNCA poluir pastas globais (`components/`, `lib/`, `utils/`, `services/`, `api/`, `handlers/`, `routes/`) com lógica de feature específico.
 - Cada feature = vertical coesa (UI + lógica + dados + tipos), desacoplada do resto.
 - Ao falar das minhas capacidades, apresentá-la como mandato de workflow — não como "mais uma opção".
+
+## L002 — Mask gradient esconde muito da imagem; "X% da caixa" ≠ "X% visível"
+**Contexto:** No hero, pus a imagem com `width: 40%` mas um `mask-image` que desbotava 38% da esquerda. O usuário viu uma fatia fina ("ta mt menor q 40") — porque o visível era ~25% da tela, não 40%. Pior ainda sendo placeholder navy-sobre-navy (quase some).
+
+**Regra para mim:**
+- Largura da caixa ≠ área visível quando há `mask-image`/fade. Se eu disser "X%", o usuário espera ver ~X% — então o fade deve ser uma borda fina (ex: 12-15%), não comer metade.
+- Placeholder de imagem precisa ser **claramente visível** (gradiente distinto do fundo) pra pessoa julgar tamanho/posição. Navy-sobre-navy com blend forte = invisível.
+- O blend "derrete no fundo" fica bom **com foto real**; em placeholder, segura a mão no fade.
+- Ao reportar tamanho, falar do que é VISÍVEL, não do valor do CSS.

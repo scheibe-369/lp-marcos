@@ -11,14 +11,14 @@ import { contact, seo } from '../../shared/config/site';
     </div>
 
     <nav class="footer-col" aria-label="Navegação do rodapé">
-      <h3>Navegação</h3>
+      <h3 class="metallic-shine shine-accent">Navegação</h3>
       <ul>
         {footerNav.map((i) => <li><a href={i.href}>{i.label}</a></li>)}
       </ul>
     </nav>
 
     <div class="footer-col">
-      <h3>Social</h3>
+      <h3 class="metallic-shine shine-accent">Social</h3>
       <ul>
         {
           footerSocial.map((s) => (
@@ -72,7 +72,6 @@ import { contact, seo } from '../../shared/config/site';
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.18em;
-    color: var(--color-accent);
     margin-bottom: 18px;
   }
   .footer-col ul {
