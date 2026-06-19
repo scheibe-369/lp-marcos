@@ -5,6 +5,7 @@ import { navItems } from './nav.data';
 <nav class="nav" data-nav aria-label="Navegação principal">
   <div class="wrap nav-inner">
     <a href="#inicio" class="brand" aria-label="Damascena Films — início">
+      <img src="/brand-mark.png" alt="" class="brand-mark" width="32" height="32" />
       <img
         src="/damascena-wordmark.svg"
         alt="Damascena Films"
@@ -78,6 +79,12 @@ import { navItems } from './nav.data';
   .brand {
     display: inline-flex;
     align-items: center;
+    gap: 10px;
+  }
+  .brand-mark {
+    height: 32px;
+    width: auto;
+    display: block;
   }
   .brand-logo {
     height: 30px;

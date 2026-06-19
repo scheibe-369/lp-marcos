@@ -4,6 +4,14 @@ import { contact, seo } from '../../shared/config/site';
 ---
 
 <footer class="footer">
+  {/* Letreiro grande da marca — eco do título da hero (mesmo tratamento
+      metallic-shine), fechando o site. Decorativo: a marca acessível/clicável
+      segue no .footer-brand abaixo. */}
+  <div class="wrap footer-letreiro" aria-hidden="true">
+    <span class="fl-line metallic-shine shine-ink">Damascena<span class="fl-dot">.</span></span>
+    <em class="fl-films metallic-shine">Films</em>
+  </div>
+
   <div class="wrap footer-grid">
     <div class="footer-brand">
       <a href="#inicio" class="brand">Damascena<span class="brand-dot">.</span>Films</a>
@@ -71,6 +79,32 @@ import { contact, seo } from '../../shared/config/site';
     max-width: 280px;
     font-size: 14px;
     color: var(--color-ink-soft);
+  }
+
+  /* Letreiro grande — espelha o .hero-title (mesma escala/tratamento) pra
+     fechar o site com o mesmo lettering da abertura. */
+  .footer-letreiro {
+    font-family: var(--font-display);
+    font-size: clamp(46px, 9vw, 116px);
+    font-weight: 400;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    margin-bottom: 64px;
+  }
+  .fl-line {
+    display: block;
+  }
+  .fl-dot {
+    color: var(--color-accent);
+  }
+  .fl-films {
+    display: block;
+    /* Space Grotesk não tem itálico real → diferencia por peso/espaçamento;
+       font-style:normal mata o oblíquo herdado do <em>. */
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: -0.04em;
   }
   .footer-col h3 {
     font-family: var(--font-body);
