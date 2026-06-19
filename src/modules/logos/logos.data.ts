@@ -5,21 +5,22 @@ export interface Logo {
 
 export const logosTitle = {
   label: 'Confiança',
-  title: 'Quem já confiou no trabalho.',
+  title: 'Quem já **confiou** no trabalho.',
 };
 
 /**
- * PLACEHOLDER — 8 clientes. Sem SVG real ainda: renderizados como chips de texto
- * monocromáticos (acendem no hover). Trocar por <img src={l.src}> quando houver
- * os logos em /images/logos/.
+ * Clientes reais. Logos são imagens raster com fundos/formatos variados
+ * (preto, branco, roxo; quadrado, wide, retrato), então o componente os
+ * emoldura em tiles uniformes (card escuro + object-fit: contain) pra
+ * normalizar tudo. `name` vira alt/title.
  */
 export const logos: Logo[] = [
-  { name: 'Cliente 1', src: '/images/logos/1.svg' },
-  { name: 'Cliente 2', src: '/images/logos/2.svg' },
-  { name: 'Cliente 3', src: '/images/logos/3.svg' },
-  { name: 'Cliente 4', src: '/images/logos/4.svg' },
-  { name: 'Cliente 5', src: '/images/logos/5.svg' },
-  { name: 'Cliente 6', src: '/images/logos/6.svg' },
-  { name: 'Cliente 7', src: '/images/logos/7.svg' },
-  { name: 'Cliente 8', src: '/images/logos/8.svg' },
+  { name: '+QI Like', src: '/images/logos/qi-like.jpg' },
+  { name: 'Barbearia do Douglas', src: '/images/logos/barbearia-do-douglas.png' },
+  { name: 'Corre y Treina', src: '/images/logos/corre-y-treina.jpg' },
+  { name: 'Donos de Hamburguerias', src: '/images/logos/donos-de-hamburguerias.png' },
+  { name: 'EDS', src: '/images/logos/eds-tight.png' },
+  { name: 'Newtech 360', src: '/images/logos/newtech-tight.png' },
+  { name: 'Poggi Fitness', src: '/images/logos/poggi-fitness.jpeg' },
+  { name: 'Spartans Digital', src: '/images/logos/spartans-digital.jpg' },
 ];

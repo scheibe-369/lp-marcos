@@ -1,12 +1,13 @@
 ---
 import { process, processTitle } from './process.data';
+import RichText from '../../shared/ui/RichText.astro';
 ---
 
 <div class="process">
   <div class="wrap">
     <header class="block-head reveal">
       <p class="eyebrow">{processTitle.label}</p>
-      <h2 class="sec-title">{processTitle.title}</h2>
+      <h2 class="sec-title is-plain"><RichText text={processTitle.title} shine strongWeight={400} /></h2>
     </header>
 
     <ol class="process-list">

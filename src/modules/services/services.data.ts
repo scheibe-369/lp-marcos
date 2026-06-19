@@ -5,7 +5,7 @@ export interface Service {
 
 export const servicesTitle = {
   label: 'O que eu faço',
-  title: 'Vídeo a serviço de resultado.',
+  title: 'Vídeo a serviço de **resultado**.',
 };
 
 export const services: Service[] = [

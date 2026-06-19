@@ -1,12 +1,13 @@
 ---
 import { services, servicesTitle } from './services.data';
+import RichText from '../../shared/ui/RichText.astro';
 ---
 
 <div class="services">
   <div class="wrap">
     <header class="block-head reveal">
       <p class="eyebrow">{servicesTitle.label}</p>
-      <h2 class="sec-title">{servicesTitle.title}</h2>
+      <h2 class="sec-title is-plain"><RichText text={servicesTitle.title} shine strongWeight={400} /></h2>
     </header>
 
     <div class="services-grid">
@@ -44,7 +45,7 @@ import { services, servicesTitle } from './services.data';
   }
   .service-card:hover {
     transform: translateY(-4px);
-    border-color: #33486e;
+    border-color: var(--color-accent);
   }
   .service-card h3 {
     font-family: var(--font-display);

@@ -1,0 +1,7 @@
+name = "damascena-films"
+compatibility_date = "2024-11-01"
+
+# Site estático (Astro output 'static'): Worker só de assets, sem script.
+# Publica em https://damascena-films.method-growth-hub.workers.dev
+[assets]
+directory = "./dist"

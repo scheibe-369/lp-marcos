@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "astro": "^5.0.0",
-    "@fontsource-variable/fraunces": "^5.0.0",
+    "@fontsource-variable/space-grotesk": "^5.0.0",
     "@fontsource-variable/hanken-grotesk": "^5.0.0"
   },
   "devDependencies": {

@@ -14,19 +14,19 @@ export interface Contact {
 }
 
 export const contact: Contact = {
-  whatsappNumber: '5522999999999', // PLACEHOLDER — trocar
+  whatsappNumber: '5522992691113', // +55 22 99269-1113
   whatsappMessage: 'Oi Marcos, vim pela landing e quero falar sobre um projeto.',
-  calLink: 'marcos/call', // PLACEHOLDER — fallback se PUBLIC_CALCOM_LINK estiver vazio
-  instagram: 'https://www.instagram.com/_marcospad/',
+  calLink: 'marcos-paulo-andrade-damascena-9kkqun/15min', // Cal.com event 6016497 — "Reunião de 15 min" (fallback se PUBLIC_CALCOM_LINK vazio)
+  instagram: 'https://www.instagram.com/damascenafilms/',
   youtube: '', // PLACEHOLDER
   region: 'Região dos Lagos · RJ',
 };
 
 export const seo = {
   brand: 'Damascena Films',
-  title: 'Damascena Films — Produção audiovisual estratégica · Região dos Lagos, RJ',
+  title: 'Damascena Films · Produção audiovisual estratégica · Região dos Lagos, RJ',
   description:
-    'Produção audiovisual do filmmaker Marcos na Região dos Lagos, RJ — e remoto pro Brasil inteiro. Vídeo com estética de cinema e cabeça de estratégia: conteúdo, institucional, evento e edição que posiciona, prende atenção e converte.',
+    'Produção audiovisual do filmmaker Marcos na Região dos Lagos, RJ, e remoto pro Brasil inteiro. Vídeo com estética de cinema e cabeça de estratégia: conteúdo, institucional, evento e edição que posiciona, prende atenção e converte.',
   url: 'https://damascenafilms.com',
   ogImage: '/og-image.jpg',
   lang: 'pt-BR',

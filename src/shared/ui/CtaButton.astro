@@ -1,8 +1,11 @@
 ---
 /**
- * Botão pill primário (PRD §10.4). Único elemento que preenche de dourado —
- * disciplina 90/5. Reusado por hero e contact. Externo por padrão (WhatsApp),
- * com rel de segurança. Emite [data-event] pro tracking delegado.
+ * Botão pill primário (PRD §10.4). Reusado por hero e contact. Externo por padrão
+ * (WhatsApp), com rel de segurança. Emite [data-event] pro tracking delegado.
+ *
+ * Animação de hover inspirada no botão "CONTRATE A TYVO" (tyvo-athostudio.webflow.io),
+ * adaptada pro azul da marca: o fundo PREENCHE de azul e o rótulo faz um ROLL
+ * vertical (a palavra sobe e some enquanto uma cópia idêntica entra por baixo).
  */
 interface Props {
   href: string;
@@ -24,7 +27,10 @@ const target = external ? '_blank' : undefined;
   rel={rel}
   data-event={event}
 >
-  <span>{label}</span>
+  <span class="cta-label">
+    <span class="cta-roll">{label}</span>
+    <span class="cta-roll cta-roll-dup" aria-hidden="true">{label}</span>
+  </span>
   <svg class="cta-arrow" width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">
     <path
       d="M1 7h15M11 2l5 5-5 5"
@@ -51,21 +57,67 @@ const target = external ? '_blank' : undefined;
     color: var(--color-ink);
     background: transparent;
     white-space: nowrap;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    /* preenchimento entra/sai em 0.5s, igual ao botão da referência */
+    transition:
+      background-color 0.5s ease,
+      color 0.5s ease,
+      border-color 0.5s ease;
   }
+
+  /* Máscara do roll: clipa o rótulo; as duas cópias deslizam pra cima no hover. */
+  .cta-label {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    line-height: 1.4;
+  }
+  .cta-roll {
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.65, 0.05, 0, 1);
+  }
+  .cta-roll-dup {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translateY(110%); /* cópia escondida logo abaixo */
+  }
+
   .cta-arrow {
     color: var(--color-accent);
-    transition: transform 0.3s ease, color 0.3s ease;
+    transition: transform 0.3s ease, color 0.5s ease;
   }
+
+  /* Hover: PREENCHE de azul + texto branco + o rótulo rola (animação tyvo). */
   .cta:hover {
     background: var(--color-accent);
-    color: var(--color-bg);
+    color: var(--color-on-accent);
+  }
+  .cta:hover .cta-roll {
+    transform: translateY(-110%);
+  }
+  .cta:hover .cta-roll-dup {
+    transform: translateY(0);
   }
   .cta:hover .cta-arrow,
   .cta:focus-visible .cta-arrow {
     transform: translateX(4px);
   }
   .cta:hover .cta-arrow {
-    color: var(--color-bg);
+    color: var(--color-on-accent);
+  }
+
+  /* Reduced-motion: sem roll/slide; mantém só a troca de cor do preenchimento. */
+  @media (prefers-reduced-motion: reduce) {
+    .cta-roll,
+    .cta-roll-dup,
+    .cta-arrow {
+      transition: none;
+    }
+    .cta:hover .cta-roll {
+      transform: none;
+    }
+    .cta:hover .cta-roll-dup {
+      transform: translateY(110%);
+    }
   }
 </style>

@@ -1,12 +1,13 @@
 ---
 import { faq, faqTitle } from './faq.data';
+import RichText from '../../shared/ui/RichText.astro';
 ---
 
 <section id="faq" class="section divider-top">
   <div class="wrap faq-wrap">
     <header class="faq-head reveal">
       <p class="eyebrow">{faqTitle.label}</p>
-      <h2 class="sec-title">{faqTitle.title}</h2>
+      <h2 class="sec-title is-plain"><RichText text={faqTitle.title} shine strongWeight={400} /></h2>
     </header>
 
     <div class="faq-list">
@@ -14,7 +15,7 @@ import { faq, faqTitle } from './faq.data';
         faq.map((item, i) => (
           <details class="faq-item reveal" style={`--reveal-delay:${(i % 3) * 70}ms`}>
             <summary class="faq-summary">
-              <span class="faq-q metallic-shine shine-ink">{item.q}</span>
+              <span class="faq-q">{item.q}</span>
               <span class="faq-marker" aria-hidden="true" />
             </summary>
             <div class="faq-answer">
@@ -66,11 +67,7 @@ import { faq, faqTitle } from './faq.data';
   .faq-q {
     font-size: 18px;
     font-weight: 500;
-  }
-  /* no hover, troca o tom do shine pra dourado (não a cor direta, que é gradiente) */
-  .faq-item:hover .faq-q {
-    --metal-color: var(--color-accent-soft);
-    --metal-shine: color-mix(in srgb, var(--color-accent-soft) 40%, white);
+    color: var(--color-ink);
   }
 
   /* Marcador +/− */

@@ -4,8 +4,14 @@ import { navItems } from './nav.data';
 
 <nav class="nav" data-nav aria-label="Navegação principal">
   <div class="wrap nav-inner">
-    <a href="#inicio" class="brand">
-      Damascena<span class="brand-dot">.</span>Films
+    <a href="#inicio" class="brand" aria-label="Damascena Films — início">
+      <img
+        src="/damascena-wordmark.svg"
+        alt="Damascena Films"
+        class="brand-logo"
+        width="135"
+        height="30"
+      />
     </a>
 
     <ul class="menu">
@@ -53,14 +59,14 @@ import { navItems } from './nav.data';
     height: 74px;
     display: flex;
     align-items: center;
-    background: rgba(10, 19, 38, 0.55);
+    background: rgba(17, 17, 17, 0.55);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid transparent;
     transition: background-color 0.4s ease, border-color 0.4s ease;
   }
   .nav.scrolled {
-    background: rgba(10, 19, 38, 0.88);
+    background: rgba(17, 17, 17, 0.88);
     border-bottom-color: var(--color-line);
   }
   .nav-inner {
@@ -70,13 +76,14 @@ import { navItems } from './nav.data';
   }
 
   .brand {
-    font-family: var(--font-display);
-    font-size: 21px;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    color: var(--color-ink);
+    display: inline-flex;
+    align-items: center;
   }
-  .brand-dot { color: var(--color-accent); }
+  .brand-logo {
+    height: 30px;
+    width: auto;
+    display: block;
+  }
 
   .menu {
     display: flex;
@@ -120,7 +127,7 @@ import { navItems } from './nav.data';
     position: fixed;
     inset: 0;
     z-index: 60;
-    background: rgba(10, 19, 38, 0.94);
+    background: rgba(17, 17, 17, 0.94);
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
     opacity: 0;

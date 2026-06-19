@@ -22,10 +22,25 @@ Thumbs.db
 
 # artefatos de QA local (screenshots + tooling)
 .shots/
+.playwright-mcp/
 
 # referências de layout que o usuário dropa (não são assets do site)
 public/marcos.png
 /ref*.png
+
+# screenshots soltos de debug (não são assets do site)
+/carrosel.png
+/erro.png
+/errocarrosel.png
+public/errofudido.png
+public/erro.png
+public/image.png
+public/texto.png
+public/cursor.png
+
+# fontes cruas (originais antes do tratamento) — só os assets finais vão pro repo
+clientes/
+public/Damascena Films SVG-6.svg
 
 # editores
 .vscode/

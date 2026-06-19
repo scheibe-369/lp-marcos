@@ -67,8 +67,8 @@ const waLink = buildWaLink();
     justify-content: center;
     /* Placeholder claramente visível (a foto real do Marcos cobre isso). */
     background:
-      radial-gradient(68% 56% at 58% 34%, rgba(74, 100, 156, 0.5), transparent 72%),
-      linear-gradient(155deg, #223b66 0%, #122142 54%, #0b1730 100%);
+      radial-gradient(68% 56% at 58% 34%, rgba(21, 104, 251, 0.22), transparent 72%),
+      linear-gradient(155deg, #1c1c1c 0%, #161616 54%, #111111 100%);
     /* só uma borda esquerda suave derrete no navy */
     -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 13%);
     mask-image: linear-gradient(to right, transparent 0%, #000 13%);
@@ -77,7 +77,7 @@ const waLink = buildWaLink();
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.18em;
-    color: #3a4d72;
+    color: #555555;
   }
   /* vinheta inferior pra assentar a imagem */
   .hero-visual::after {
@@ -87,7 +87,7 @@ const waLink = buildWaLink();
     background: linear-gradient(to top, var(--color-bg) 1%, transparent 32%);
   }
 
-  /* halo dourado discreto atrás do título */
+  /* halo azul discreto atrás do título */
   .hero-halo {
     position: absolute;
     top: 14%;
@@ -95,7 +95,7 @@ const waLink = buildWaLink();
     width: 46vw;
     max-width: 620px;
     aspect-ratio: 1;
-    background: radial-gradient(circle, rgba(201, 169, 106, 0.1), transparent 64%);
+    background: radial-gradient(circle, rgba(21, 104, 251, 0.12), transparent 64%);
     pointer-events: none;
     z-index: 1;
   }
@@ -125,8 +125,12 @@ const waLink = buildWaLink();
   }
   .hero-films {
     display: block;
-    font-style: italic;
-    /* cor vem do gradiente do .metallic-shine (base = accent-soft) */
+    /* Space Grotesk não tem itálico real — diferencia a linha 2 por peso/espaçamento
+       em vez de oblíquo sintetizado. font-style: normal mata o itálico herdado do <em>.
+       cor vem do gradiente do .metallic-shine (base = accent-soft) */
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: -0.04em;
   }
 
   .hero-role {

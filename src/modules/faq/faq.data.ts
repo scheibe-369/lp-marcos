@@ -5,7 +5,7 @@ export interface FaqItem {
 
 export const faqTitle = {
   label: 'Dúvidas',
-  title: 'Perguntas que sempre chegam.',
+  title: 'Perguntas **frequentes.**',
 };
 
 export const faq: FaqItem[] = [

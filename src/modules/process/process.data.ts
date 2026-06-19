@@ -6,7 +6,7 @@ export interface ProcessStep {
 
 export const processTitle = {
   label: 'Como eu trabalho',
-  title: 'Começa antes da câmera.',
+  title: 'Começa **antes da câmera**.',
 };
 
 export const process: ProcessStep[] = [

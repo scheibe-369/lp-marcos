@@ -1,47 +1,73 @@
 ---
 import { cases, casesTitle } from './cases.data';
+
+// Loop contínuo sem emenda. A perspectiva (rotateY) COMPRIME o lado direito, então
+// 2 cópias não enchiam a viewport: o fim do conteúdo aparecia e sobrava um vazio
+// até a volta. Várias cópias garantem que o conteúdo sempre transborda à direita.
+// A animação avança exatamente UMA cópia por ciclo (translateX -100%/COPIES),
+// então o loop emenda perfeito e a velocidade independe de COPIES.
+const COPIES = 6;
+const loop = Array.from({ length: COPIES }, () => cases).flat();
 ---
 
 <section id="cases" class="cases">
   <div class="wrap cases-head">
     <p class="eyebrow reveal">{casesTitle.label}</p>
-    <h2 class="sec-title reveal" style="--reveal-delay:80ms">{casesTitle.title}</h2>
+    <h2 class="sec-title is-plain reveal" style="--reveal-delay:80ms">{casesTitle.title}</h2>
   </div>
 
   <div class="cases-stage" data-cases>
-    <div class="cases-track" data-cases-track>
-      {
-        cases.map((c, i) => (
-          <button
-            type="button"
-            class="case-card"
-            data-case-card
-            data-video-type={c.videoType}
-            data-video-id={c.videoId}
-            data-event="case_open"
-            style={`--i:${i}`}
-          >
-            <span class="sr-only">Abrir vídeo: </span>
-            {/* Placeholder em gradiente. Trocar por <Image src={c.thumb}/> quando houver still real. */}
-            <span class="case-ph" aria-hidden="true">Sua imagem</span>
+    <div class="cases-3d">
+      <div class="cases-track" data-cases-track style={`--copies:${COPIES}`}>
+        {
+          loop.map((c, i) => {
+            const dup = i >= cases.length;
+            return (
+              <button
+                type="button"
+                class="case-card"
+                data-case-card
+                data-video-type={c.videoType}
+                data-video-id={c.videoId}
+                data-event="case_open"
+                style={`--i:${i % cases.length}`}
+                aria-hidden={dup ? 'true' : undefined}
+                tabindex={dup ? -1 : undefined}
+              >
+                {/* O botão = alvo de clique (inclui o respiro à direita, sem fresta morta).
+                    O visual mora no .case-frame interno. */}
+                <span class="case-frame">
+                  <span class="sr-only">Abrir vídeo: </span>
+                  {/* Imagens genéricas (picsum) só pra VISUALIZAÇÃO — trocar pelos stills reais (c.thumb / <Image>). */}
+                  <img
+                    class="case-img"
+                    src={`https://picsum.photos/seed/dam-${c.slug}/640/853`}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                  />
+                  <span class="case-ph" aria-hidden="true">Sua imagem</span>
 
-            <span class="case-tag">{c.tag}</span>
+                  <span class="case-tag">{c.tag}</span>
 
-            <span class="case-overlay">
-              <span class="case-meta">
-                <span class="case-client metallic-shine shine-accent">{c.client}</span>
-                <span class="case-project metallic-shine shine-ink">{c.project}</span>
-              </span>
-              <span class="case-play" aria-hidden="true">
-                <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
-                  <circle cx="23" cy="23" r="22" stroke="currentColor" stroke-width="1.2" />
-                  <path d="M19 16l11 7-11 7V16z" fill="currentColor" />
-                </svg>
-              </span>
-            </span>
-          </button>
-        ))
-      }
+                  <span class="case-overlay">
+                    <span class="case-meta">
+                      <span class="case-client metallic-shine accent-soft">{c.client}</span>
+                      <span class="case-project metallic-shine shine-ink">{c.project}</span>
+                    </span>
+                    <span class="case-play" aria-hidden="true">
+                      <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
+                        <circle cx="23" cy="23" r="22" stroke="currentColor" stroke-width="1.2" />
+                        <path d="M19 16l11 7-11 7V16z" fill="currentColor" />
+                      </svg>
+                    </span>
+                  </span>
+                </span>
+              </button>
+            );
+          })
+        }
+      </div>
     </div>
   </div>
 
@@ -67,10 +93,8 @@ import { cases, casesTitle } from './cases.data';
 </section>
 
 <script>
-  import { initCarousel } from './carousel.client';
   import { initCursor } from './cursor.client';
   import { initLightbox } from './lightbox.client';
-  initCarousel();
   initCursor();
   initLightbox();
 </script>
@@ -78,54 +102,114 @@ import { cases, casesTitle } from './cases.data';
 <style>
   .cases {
     padding-block: 96px;
-    overflow: clip;
+    overflow-x: clip;
+    overflow-y: visible;
+    position: relative;
+    z-index: 3;
   }
   .cases-head {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    text-align: center;
     gap: 12px;
-    margin-bottom: 22px;
+    margin-bottom: 100px;
+    position: relative;
+    z-index: 2;
   }
 
-  /* Palco: clipa horizontal, deixa a inclinação vazar na vertical */
+  /* Palco = dono da perspectiva (câmera fixa). Clipa X, deixa o 3D vazar no Y. */
   .cases-stage {
     position: relative;
     overflow-x: clip;
     overflow-y: visible;
-    padding-block: 74px;
+    padding-block: 130px;
+    perspective: 1150px;
+    perspective-origin: 38% 50%;
     touch-action: pan-y;
   }
-  .cases-stage.dragging {
-    cursor: grabbing;
+
+  /* A câmera: um rotate ESTÁTICO + preserve-3d. Nunca anima.
+     Match alexledp.com: diagonal (rotateZ) + yaw (rotateY) p/ shrink à direita. */
+  .cases-3d {
+    transform-style: preserve-3d;
+    transform: rotateZ(6deg) rotateY(16deg);
+    transform-origin: 30% 50%;
+    /* Sem will-change: este nó NUNCA anima (câmera estática). Promovê-lo a
+       camada só desperdiça memória e agrava a imprecisão de hit-test 3D que
+       fazia o cursor "VER" piscar pro nativo dentro do card. */
   }
 
+  /* Camada de movimento: marquee puro (translateX), GPU-composited. */
+  /* Pitch uniforme (cada card = frame + 20px de padding) → loop periódico. A
+     animação avança exatamente UMA cópia por ciclo: translateX(-100%/COPIES),
+     onde --copies vem do componente. Emenda sem salto p/ qualquer nº de cópias;
+     a velocidade (px/s) não muda com COPIES porque uma cópia = mesma largura. */
   .cases-track {
     display: flex;
-    gap: 26px;
-    padding-inline: max(28px, calc((100vw - 1180px) / 2 + 28px));
     width: max-content;
-    transform-origin: center center;
+    animation: cases-dolly 34s linear infinite;
     will-change: transform;
+    transform: translateZ(0);
   }
 
-  /* Card em retrato ~3:4 */
+  @keyframes cases-dolly {
+    to {
+      transform: translateX(calc(-100% / var(--copies)));
+    }
+  }
+
+  /* Pausa a auto-rolagem enquanto o ponteiro está sobre o carrossel: o card que
+     você quer ver/clicar para de fugir E o hit-testing 3D estabiliza (cards
+     parados não geram os nulls de container que derrubavam o cursor "VER"). */
+  .cases-stage:hover .cases-track {
+    animation-play-state: paused;
+  }
+
+  /* Botão = ALVO DE CLIQUE. Carrega o respiro de 20px como padding-right
+     (parte da área clicável), então os alvos de cards adjacentes se ENCOSTAM:
+     não há pixel morto entre eles → arrastar de um card pro outro nunca passa
+     pelo "nada" e o selo VER não pisca. O visual fica no .case-frame interno. */
   .case-card {
     position: relative;
     flex: 0 0 auto;
-    width: 304px;
+    padding: 0 20px 0 0;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    color: inherit;
+    text-align: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* O visual em retrato ~3:4 (borda, imagem, overlay) */
+  .case-frame {
+    position: relative;
+    display: block;
+    width: 420px;
     aspect-ratio: 3 / 4;
     border: 1px solid var(--color-line);
     border-radius: 4px;
     overflow: hidden;
-    background: linear-gradient(135deg, #14274a, #0a1426);
-    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    background: linear-gradient(135deg, #1c1c1c, #0d0d0d);
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    transition: border-color 0.4s ease;
   }
-  .case-card:hover {
-    transform: translateY(-4px);
-    border-color: #33486e;
-    box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.7);
+  /* Borda acende só no card sob o mouse (classe via JS, não :hover — evita
+     flicker com os cards em movimento). */
+  .case-card.is-hovered .case-frame {
+    border-color: var(--color-accent);
   }
 
+  .case-img {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
   .case-ph {
     position: absolute;
     inset: 0;
@@ -134,7 +218,7 @@ import { cases, casesTitle } from './cases.data';
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.18em;
-    color: #3a4d72;
+    color: #555555;
   }
 
   .case-tag {
@@ -148,6 +232,7 @@ import { cases, casesTitle } from './cases.data';
     color: var(--color-ink-soft);
   }
 
+  /* Título/sombra aparece SÓ no card sob o mouse (classe .is-hovered via JS). */
   .case-overlay {
     position: absolute;
     inset: 0;
@@ -157,12 +242,11 @@ import { cases, casesTitle } from './cases.data';
     justify-content: flex-end;
     gap: 14px;
     padding: 22px;
-    background: linear-gradient(to top, rgba(7, 14, 30, 0.92) 8%, rgba(7, 14, 30, 0.1) 60%, transparent);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 8%, rgba(0, 0, 0, 0.1) 60%, transparent);
     opacity: 0;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.3s ease;
   }
-  .case-card:hover .case-overlay,
-  .case-card:focus-visible .case-overlay {
+  .case-card.is-hovered .case-overlay {
     opacity: 1;
   }
 
@@ -185,7 +269,7 @@ import { cases, casesTitle } from './cases.data';
     position: absolute;
     top: 18px;
     right: 18px;
-    color: var(--color-accent);
+    color: var(--color-accent-soft);
     opacity: 0.85;
   }
 
@@ -208,21 +292,25 @@ import { cases, casesTitle } from './cases.data';
     height: 72px;
     border-radius: 50%;
     background: var(--color-accent);
-    color: var(--color-bg);
+    color: var(--color-on-accent);
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.15em;
     opacity: 0;
     transform: scale(0.5);
-    transition: opacity 0.25s ease, transform 0.25s ease;
+    /* Sem transition no estado-base → o selo some NA HORA junto com o cursor
+       nativo voltando (nunca "nativo + VER"). Animação só na ENTRADA (.on). */
   }
   .cases-cursor.on .cases-cursor-inner {
     opacity: 1;
     transform: scale(1);
+    transition: opacity 0.2s ease, transform 0.2s ease;
   }
-  .cases-stage.cursor-on,
-  .cases-stage.cursor-on .case-card {
+  /* Cursor nativo some quando há um card sob o mouse (em toda a stage, pra não
+     aparecer nativo + selo na borda). Nas frestas/vazio volta ao normal. */
+  .cases-stage.has-hover,
+  .cases-stage.has-hover * {
     cursor: none;
   }
 
@@ -234,7 +322,7 @@ import { cases, casesTitle } from './cases.data';
     display: grid;
     place-items: center;
     padding: 24px;
-    background: rgba(10, 19, 38, 0.92);
+    background: rgba(0, 0, 0, 0.92);
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     opacity: 0;
@@ -274,18 +362,40 @@ import { cases, casesTitle } from './cases.data';
   }
   .lightbox-close:hover {
     background: var(--color-accent);
-    color: var(--color-bg);
+    color: var(--color-on-accent);
+  }
+
+  /* Reduced-motion: para o auto-scroll, achata o 3D, some o set duplicado */
+  @media (prefers-reduced-motion: reduce) {
+    .cases-track {
+      animation: none;
+    }
+    .cases-3d {
+      transform: none;
+    }
+    .case-card[aria-hidden='true'] {
+      display: none;
+    }
   }
 
   @media (max-width: 880px) {
-    .case-card {
-      width: 70vw;
-      max-width: 300px;
+    /* 3D mais suave pra não estourar a viewport */
+    .cases-3d {
+      transform: rotateZ(5deg) rotateY(14deg);
+    }
+    .cases-stage {
+      perspective: 1200px;
+      perspective-origin: 40% 50%;
+      padding-block: 72px;
+    }
+    .case-frame {
+      width: 74vw;
+      max-width: 320px;
     }
     /* Mobile: sem hover/cursor — nome + tag sempre visíveis */
     .case-overlay {
       opacity: 1;
-      background: linear-gradient(to top, rgba(7, 14, 30, 0.92) 14%, transparent 70%);
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 14%, transparent 70%);
     }
     .cases-cursor {
       display: none;

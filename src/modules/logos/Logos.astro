@@ -1,22 +1,33 @@
 ---
 import { logos, logosTitle } from './logos.data';
-// Set duplicado pro loop contínuo sem emenda (translateX 0 → -50%)
-const loop = [...logos, ...logos];
+import RichText from '../../shared/ui/RichText.astro';
+// Loop infinito sem emenda: N cópias + translateX(-100%/N). Precisa de cópias
+// suficientes pra UMA cópia transbordar a viewport mais larga (senão sobra
+// vazio cinza na direita perto do fim do ciclo). 8 logos × 4 = folga p/ ultra-wide.
+const COPIES = 4;
+const loop = Array.from({ length: COPIES }, () => logos).flat();
 ---
 
 <section id="clientes" class="section divider-top">
   <div class="wrap logos-head reveal">
-    <p class="eyebrow">{logosTitle.label}</p>
-    <h2 class="sec-title">{logosTitle.title}</h2>
+    <p class="eyebrow is-plain">{logosTitle.label}</p>
+    <h2 class="sec-title is-plain"><RichText text={logosTitle.title} shine strongWeight={400} /></h2>
   </div>
 
   <div class="marquee" aria-label="Clientes atendidos">
-    <div class="marquee-track">
+    <div class="marquee-track" style={`--copies:${COPIES}`}>
       {
         loop.map((l, i) => (
-          <span class="logo-chip" aria-hidden={i >= logos.length ? 'true' : undefined}>
-            {l.name}
-          </span>
+          <figure class="logo-item" aria-hidden={i >= logos.length ? 'true' : undefined}>
+            <img
+              class="logo-img"
+              src={l.src}
+              alt={l.name}
+              loading="eager"
+              decoding="async"
+            />
+            <figcaption class="logo-name">{l.name}</figcaption>
+          </figure>
         ))
       }
     </div>
@@ -27,9 +38,12 @@ const loop = [...logos, ...logos];
   .logos-head {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 12px;
     max-width: 720px;
+    margin-inline: auto;
     margin-bottom: 52px;
+    text-align: center;
   }
 
   .marquee {
@@ -39,33 +53,62 @@ const loop = [...logos, ...logos];
   }
   .marquee-track {
     display: flex;
-    align-items: center;
-    gap: 64px;
+    align-items: flex-start;
     width: max-content;
-    animation: marquee 35s linear infinite;
+    animation: marquee 44s linear infinite;
   }
   .marquee:hover .marquee-track {
     animation-play-state: paused;
   }
 
-  /* Chips de texto (placeholder). Cor cheia garante contraste AA; logos reais
-     em imagem podem voltar a usar opacity/grayscale sem flag de contraste. */
-  .logo-chip {
-    font-family: var(--font-display);
-    font-size: 24px;
-    font-weight: 400;
+  /* Cada cliente = ícone quadrado uniforme + nome embaixo. `object-fit: cover`
+     enquadra todas as marcas no mesmo quadrado, cortando a margem morta dos
+     arquivos com muito padding (ex: Newtech/EDS ficam bem maiores).
+     O espaçamento é margin-right por item (não gap do flex): todo item —
+     inclusive o último — carrega seu espaço → fileira PERFEITAMENTE periódica,
+     pré-requisito pro translateX(-100%/N) emendar sem pulo nem fresta. */
+  .logo-item {
+    flex: 0 0 auto;
+    width: 116px;
+    margin: 0 44px 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .logo-img {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border-radius: 18px;
+    display: block;
+    opacity: 0.95;
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
+  }
+  .logo-name {
+    font-size: 13px;
+    line-height: 1.25;
+    text-align: center;
     letter-spacing: 0.01em;
-    white-space: nowrap;
     color: var(--color-ink-soft);
     transition: color 0.3s ease;
   }
-  .logo-chip:hover {
+  .logo-item:hover .logo-img {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  .logo-item:hover .logo-name {
     color: var(--color-ink);
   }
 
+  /* Avança exatamente UMA cópia por ciclo (1/N da largura total) → o quadro
+     no reset é idêntico ao inicial. Mais cópias só estendem a fileira; não
+     mudam distância/velocidade do ciclo. */
   @keyframes marquee {
     to {
-      transform: translateX(-50%);
+      transform: translateX(calc(-100% / var(--copies)));
     }
   }
 
@@ -81,7 +124,7 @@ const loop = [...logos, ...logos];
       row-gap: 24px;
     }
     /* fileira estática não precisa do set duplicado */
-    .logo-chip:nth-child(n + 9) {
+    .logo-item:nth-child(n + 9) {
       display: none;
     }
   }
