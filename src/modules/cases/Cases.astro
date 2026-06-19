@@ -159,13 +159,6 @@ const loop = Array.from({ length: COPIES }, () => cases).flat();
     }
   }
 
-  /* Pausa a auto-rolagem enquanto o ponteiro está sobre o carrossel: o card que
-     você quer ver/clicar para de fugir E o hit-testing 3D estabiliza (cards
-     parados não geram os nulls de container que derrubavam o cursor "VER"). */
-  .cases-stage:hover .cases-track {
-    animation-play-state: paused;
-  }
-
   /* Botão = ALVO DE CLIQUE. Carrega o respiro de 20px como padding-right
      (parte da área clicável), então os alvos de cards adjacentes se ENCOSTAM:
      não há pixel morto entre eles → arrastar de um card pro outro nunca passa

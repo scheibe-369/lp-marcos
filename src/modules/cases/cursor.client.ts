@@ -12,25 +12,23 @@
  * JUNTOS (setActive), então nunca aparece "nativo + VER" ao mesmo tempo.
  * Detecção por `pointermove` (responde ao SEU mouse, não aos cards rolando).
  *
- * Anti-glitch: a fileira AUTO-ROLA e os cards são tilteados sob perspective +
- * preserve-3d, então o hit-testing do browser fica impreciso — com os cards
- * deslizando sob o ponteiro, `e.target` às vezes resolve pra um CONTAINER
- * ancestral (track/3d/stage) em vez do card, mesmo com o ponteiro PARADO dentro
- * do card. Isso derrubava o selo pro cursor nativo no meio do card. Duas defesas:
- *   1) A auto-rolagem PAUSA no hover (CSS) → card parado = hit-testing estável.
- *   2) DESLIGAR tem debounce por TEMPO, e o prazo depende de ONDE o null veio:
- *      - null de FRESTA real = `e.target` é o próprio botão `[data-case-card]`
- *        (o padding entre frames pertence ao botão), sem `.case-frame`. Aí o
- *        ponteiro está MESMO num vão → desliga rápido (`OFF_FRESTA_MS`).
- *      - null de CONTAINER = `e.target` é track/3d/stage, SEM botão ancestral =
- *        glitch de hit-test sobre o card (ou o padding vazio do palco) → carência
- *        LONGA (`OFF_GLITCH_MS`): rajadas de glitch são curtas e intercaladas com
- *        acertos de frame (que cancelam o timer) → nunca derruba dentro do card;
- *        só o padding vazio sustentado acaba caindo pra nativo.
- * LIGAR é sempre imediato. O prazo ancora no PRIMEIRO null (não reinicia) e
- * qualquer acerto de frame cancela. Selo + título + cursor:none ligam/desligam
- * JUNTOS (setActive) → nunca "nativo + VER". Tempo (não contagem de amostras) é
- * invariante à velocidade do mouse e dispara mesmo com o mouse parado.
+ * Anti-glitch (SEM pausar a rolagem): a fileira AUTO-ROLA e os cards são
+ * tilteados sob perspective + preserve-3d, então o hit-testing do browser fica
+ * impreciso — com os cards deslizando sob o ponteiro, `e.target` às vezes
+ * resolve pra um CONTAINER ancestral (track/3d/stage) em vez do card, derrubando
+ * o selo pro cursor nativo no MEIO do card. A chave é, quando NÃO há `.case-frame`
+ * sob o ponteiro, distinguir ONDE ele está:
+ *   - FRESTA real: `e.target` é o próprio botão `[data-case-card]` (o padding
+ *     entre frames pertence ao botão). Vão de verdade → desliga (debounce curto
+ *     `OFF_FRESTA_MS`), cursor nativo ali — como deve ser.
+ *   - CONTAINER puro: `e.target` é track/3d/stage, SEM botão ancestral = o
+ *     hit-test 3D errou sobre o card (ou é o padding vazio do palco). Caso
+ *     AMBÍGUO → NÃO desliga: mantém o estado atual (ON segue ON). É isso que mata
+ *     o flicker dentro do card SEM precisar parar a rolagem (pausar no hover é
+ *     horrível: o carrossel trava quando você passa o mouse).
+ * Quem desliga o selo é só a FRESTA (botão) ou o pointerleave (sair do palco).
+ * LIGAR é imediato; qualquer acerto de frame cancela um off pendente. Selo +
+ * título + cursor:none ligam/desligam JUNTOS (setActive) → nunca "nativo + VER".
  * DESLIGADO em toque (pointer: coarse) e em prefers-reduced-motion.
  */
 export function initCursor(): void {
@@ -42,8 +40,7 @@ export function initCursor(): void {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (coarse || reduce) return;
 
-  const OFF_FRESTA_MS = 80; // null sobre o BOTÃO (vão real) por mais que isso = fresta
-  const OFF_GLITCH_MS = 220; // null sobre CONTAINER (glitch sobre o card / padding vazio)
+  const OFF_FRESTA_MS = 80; // null sobre o BOTÃO (vão real) por mais que isso = fresta → nativo
 
   let x = 0;
   let y = 0;
@@ -75,8 +72,7 @@ export function initCursor(): void {
     }
   };
   // Ancora o prazo no PRIMEIRO null (não reinicia a cada null) → o mouse parado
-  // na fresta ainda resolve pro cursor nativo dentro da janela. O prazo varia
-  // conforme a origem do null (fresta real vs glitch de container).
+  // na fresta ainda resolve pro cursor nativo dentro da janela.
   const scheduleOff = (delay: number) => {
     if (offTimer) return;
     offTimer = window.setTimeout(() => {
@@ -99,12 +95,16 @@ export function initCursor(): void {
       setActive(frame.closest<HTMLElement>('[data-case-card]') ?? null);
       return;
     }
-    // Sem frame: distingue FRESTA real (target é o botão, padding entre frames)
-    // de GLITCH de container (target é track/3d/stage, sem botão = hit-test 3D
-    // errando sobre o card). Glitch ganha carência longa pra não derrubar o selo
-    // dentro do card; um acerto de frame a tempo cancela qualquer um.
-    const inButton = !!t?.closest<HTMLElement>('[data-case-card]');
-    scheduleOff(inButton ? OFF_FRESTA_MS : OFF_GLITCH_MS);
+    // Sem frame mas DENTRO de um botão = fresta real (o padding entre frames
+    // pertence ao botão) → desliga (cursor nativo no vão), com debounce curto.
+    if (t?.closest<HTMLElement>('[data-case-card]')) {
+      scheduleOff(OFF_FRESTA_MS);
+      return;
+    }
+    // Sem frame e sem botão = target é um CONTAINER (track/3d/stage): o hit-test
+    // 3D errou sobre o card enquanto a fileira ROLA (e.target caiu no ancestral
+    // em vez do card). Caso AMBÍGUO → NÃO desliga: derrubaria o selo DENTRO do
+    // card. Mantém o estado; quem desliga é a fresta (acima) ou o pointerleave.
   });
 
   stage.addEventListener('pointerleave', () => {
