@@ -27,7 +27,7 @@ export const seo = {
   title: 'Damascena Films · Produção audiovisual estratégica · Região dos Lagos, RJ',
   description:
     'Produção audiovisual do filmmaker Marcos na Região dos Lagos, RJ, e remoto pro Brasil inteiro. Vídeo com estética de cinema e cabeça de estratégia: conteúdo, institucional, evento e edição que posiciona, prende atenção e converte.',
-  url: 'https://damascenafilms.com',
+  url: 'https://damascenafilms.com.br',
   ogImage: '/og-image.jpg',
   lang: 'pt-BR',
 } as const;
