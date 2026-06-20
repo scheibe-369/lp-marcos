@@ -3,46 +3,63 @@ import { footerNav, footerSocial } from './footer.data';
 import { contact, seo } from '../../shared/config/site';
 ---
 
+{/* Footer CENTRALIZADO — flui da seção de Contato (que já é centralizada) e resolve
+    o "vazio": com pouco conteúdo, centralizar elimina os vãos laterais que um grid de
+    colunas deixaria. Navegação inline horizontal preenche a largura naturalmente; o
+    wordmark vira ASSINATURA de fechamento contida (não a faixa gigante de antes). */}
 <footer class="footer">
-  {/* Letreiro grande da marca — eco do título da hero (mesmo tratamento
-      metallic-shine), fechando o site. Decorativo: a marca acessível/clicável
-      segue no .footer-brand abaixo. */}
-  <div class="wrap footer-letreiro" aria-hidden="true">
-    <span class="fl-line metallic-shine shine-ink">Damascena<span class="fl-dot">.</span></span>
-    <em class="fl-films metallic-shine">Films</em>
-  </div>
+  <div class="wrap footer-main">
+    {/* Lockup acessível: marca clicável (volta ao topo); imgs decorativas (aria-hidden),
+        nome real em sr-only. Wordmark só com height (width:auto) → aspect ratio intacto. */}
+    <a class="footer-lockup" href="#inicio" aria-label={`${seo.brand} — início`}>
+      <img
+        class="footer-mark"
+        src="/brand-mark.png"
+        alt=""
+        aria-hidden="true"
+        width="32"
+        height="32"
+        loading="lazy"
+      />
+      <img
+        class="footer-wordmark"
+        src="/damascena-wordmark.svg"
+        alt=""
+        aria-hidden="true"
+        width="179"
+        height="40"
+        loading="lazy"
+      />
+      <span class="sr-only">{seo.brand}</span>
+    </a>
 
-  <div class="wrap footer-grid">
-    <div class="footer-brand">
-      <a href="#inicio" class="brand">Damascena<span class="brand-dot">.</span>Films</a>
-      <p class="footer-tagline">Produção audiovisual · {contact.region}</p>
-    </div>
+    <p class="footer-tagline">
+      Produção audiovisual com estética de cinema e <b class="accent-soft">cabeça de estratégia</b>.
+    </p>
 
-    <nav class="footer-col" aria-label="Navegação do rodapé">
-      <h3 class="metallic-shine shine-accent">Navegação</h3>
-      <ul>
-        {footerNav.map((i) => <li><a href={i.href}>{i.label}</a></li>)}
-      </ul>
+    {/* Navegação inline — horizontal e centralizada, preenche a largura sem colunas vazias. */}
+    <nav class="footer-nav" aria-label="Navegação do rodapé">
+      {footerNav.map((i) => <a href={i.href}>{i.label}</a>)}
     </nav>
 
-    <div class="footer-col">
-      <h3 class="metallic-shine shine-accent">Social</h3>
-      <ul>
+    {/* Meta: redes + localização numa única linha centralizada (info útil, sem CTA
+        redundante — a seção de Contato acima já tem WhatsApp + Cal.com). */}
+    <div class="footer-meta">
+      <ul class="footer-social" aria-label="Redes sociais">
         {
           footerSocial.map((s) => (
             <li>
-              <a href={s.href} target="_blank" rel="noopener noreferrer">
-                {s.label}
-              </a>
+              <a href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a>
             </li>
           ))
         }
       </ul>
+      <span class="footer-region">{contact.region}</span>
     </div>
   </div>
 
   <div class="wrap footer-bottom">
-    <span>{seo.brand}</span>
+    <span class="footer-brand-name">{seo.brand}</span>
     <span class="footer-credit">
       Desenvolvido por <a
         href="https://methodgrowthhub.com.br"
@@ -56,90 +73,136 @@ import { contact, seo } from '../../shared/config/site';
 <style>
   .footer {
     border-top: 1px solid var(--color-line);
-    padding: 64px 0 40px;
+    padding: 64px 0 36px;
     position: relative;
-    z-index: 2;
-  }
-  .footer-grid {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr 1fr;
-    gap: 40px;
-  }
-  .footer .brand {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 500;
-    color: var(--color-ink);
-  }
-  .footer .brand-dot {
-    color: var(--color-accent);
-  }
-  .footer-tagline {
-    margin-top: 14px;
-    max-width: 280px;
-    font-size: 14px;
-    color: var(--color-ink-soft);
+    z-index: 2; /* acima do grão de fundo */
   }
 
-  /* Letreiro grande — espelha o .hero-title (mesma escala/tratamento) pra
-     fechar o site com o mesmo lettering da abertura. */
-  .footer-letreiro {
-    font-family: var(--font-display);
-    font-size: clamp(46px, 9vw, 116px);
-    font-weight: 400;
-    line-height: 0.92;
-    letter-spacing: -0.02em;
-    color: var(--color-ink);
-    margin-bottom: 64px;
-  }
-  .fl-line {
-    display: block;
-  }
-  .fl-dot {
-    color: var(--color-accent);
-  }
-  .fl-films {
-    display: block;
-    /* Space Grotesk não tem itálico real → diferencia por peso/espaçamento;
-       font-style:normal mata o oblíquo herdado do <em>. */
-    font-style: normal;
-    font-weight: 600;
-    letter-spacing: -0.04em;
-  }
-  .footer-col h3 {
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    margin-bottom: 18px;
-  }
-  .footer-col ul {
-    list-style: none;
+  /* Coluna centralizada — ritmo vertical apertado, sem vãos laterais. */
+  .footer-main {
     display: flex;
     flex-direction: column;
-    gap: 11px;
-    padding: 0;
+    align-items: center;
+    text-align: center;
+    gap: 22px;
   }
-  .footer-col a {
+
+  /* --- Marca (lockup acessível, assinatura compacta) --- */
+  .footer-lockup {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    line-height: 0; /* mata a folga fantasma abaixo das imgs inline */
+  }
+  .footer-mark {
+    height: 30px;
+    width: auto;
+    display: block;
+  }
+  /* Wordmark reduzido: só height (width:auto preserva o aspect ~4.49:1 → sem distorção).
+     38px é "assinatura" elegante — longe dos 92px que estouravam a faixa antiga. */
+  .footer-wordmark {
+    height: 38px;
+    width: auto;
+    display: block;
+  }
+
+  .footer-tagline {
+    margin: 0;
+    max-width: 52ch;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+  }
+  /* O <b> herda a animação metálica do .accent-soft global; reset de peso/itálico. */
+  .footer-tagline b {
+    font-weight: inherit;
+    font-style: normal;
+  }
+
+  /* --- Navegação inline (preenche a largura, centralizada) --- */
+  .footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px 30px;
+    margin-top: 4px;
+  }
+  .footer-nav a {
     font-size: 15px;
     color: var(--color-ink-soft);
     transition: color 0.3s ease;
   }
-  .footer-col a:hover {
+  .footer-nav a:hover {
     color: var(--color-ink);
   }
-  .footer-bottom {
+
+  /* --- Meta (redes + localização) numa linha centralizada --- */
+  .footer-meta {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
     align-items: center;
-    margin-top: 56px;
-    padding-top: 26px;
+    justify-content: center;
+    gap: 10px 18px;
+    margin-top: 2px;
+    font-size: 13px;
+    color: var(--color-ink-soft);
+  }
+  .footer-social {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 0;
+    margin: 0;
+  }
+  /* Separador em ponto (inline, robusto) entre os itens de meta — discreto mas visível. */
+  .footer-social li + li::before,
+  .footer-meta .footer-region::before {
+    content: "·";
+    margin-right: 9px;
+    color: var(--color-ink-soft);
+    opacity: 0.55;
+  }
+  .footer-social a {
+    color: var(--color-ink-soft);
+    transition: color 0.3s ease;
+  }
+  .footer-social a:hover {
+    color: var(--color-ink);
+  }
+
+  /* --- Bottom bar ---
+     Grid 1fr auto 1fr: o crédito do meio fica no CENTRO REAL da tela,
+     independente da largura dos textos das laterais (com space-between ele saía
+     do centro porque o copyright à direita é mais largo que a marca à esquerda). */
+  .footer-bottom {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 8px 24px;
+    margin-top: 48px;
+    padding-top: 24px;
     border-top: 1px solid var(--color-line);
     font-size: 13px;
     color: var(--color-ink-soft);
   }
-  /* Crédito de desenvolvimento — "Growth Hub" linka pro site da agência */
+  .footer-bottom > :first-child {
+    justify-self: start;
+  }
+  .footer-bottom > .footer-credit {
+    justify-self: center;
+    text-align: center;
+  }
+  .footer-bottom > :last-child {
+    justify-self: end;
+  }
+  .footer-brand-name {
+    color: var(--color-ink);
+  }
+  /* Crédito — "Growth Hub" linka pro site da agência (cor accent-soft). */
   .footer-credit a {
     color: var(--color-accent-soft);
     transition: color 0.3s ease;
@@ -149,14 +212,17 @@ import { contact, seo } from '../../shared/config/site';
   }
 
   @media (max-width: 880px) {
-    .footer-grid {
-      grid-template-columns: 1fr;
-      gap: 36px;
+    .footer {
+      padding: 52px 0 32px;
     }
+    /* Mobile: empilha centralizado (volta a flex; a base é grid no desktop). */
     .footer-bottom {
+      display: flex;
       flex-direction: column;
-      gap: 10px;
+      align-items: center;
       text-align: center;
+      gap: 8px;
+      margin-top: 40px;
     }
   }
 </style>
